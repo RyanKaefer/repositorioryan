@@ -1,0 +1,58 @@
+import java.util.Scanner;
+
+public class TestaAluno {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println(">>> INÍCIO SOFTWARE ALUNO <<<");
+        
+        // Coleta de dados do aluno
+        System.out.print("Informe o nome do aluno: ");
+        String nome = scanner.nextLine();
+        
+        System.out.print("Informe a matrícula: ");
+        String matricula = scanner.nextLine();
+        
+        System.out.print("Informe o sexo (M/F): ");
+        char sexo = scanner.next().charAt(0);
+        scanner.nextLine(); // Limpar o buffer
+        
+        System.out.print("Informe a data de nascimento: ");
+        String dataNascimento = scanner.nextLine();
+        
+        System.out.print("Informe o Curso: ");
+        String curso = scanner.nextLine();
+        
+        System.out.print("Informe o ano de início: ");
+        int anoInicio = scanner.nextInt();
+        
+        System.out.print("Informe a Nota da Prova 1: ");
+        double notaProva1 = scanner.nextDouble();
+        
+        System.out.print("Informe a Nota da Prova 2: ");
+        double notaProva2 = scanner.nextDouble();
+        
+        System.out.print("Informe a média dos Trabalhos: ");
+        double mediaTrabalhos = scanner.nextDouble();
+
+        // Instanciando o objeto Aluno
+        Aluno aluno = new Aluno(nome, matricula, sexo, dataNascimento, curso, anoInicio);
+        aluno.setNotaProva1(notaProva1);
+        aluno.setNotaProva2(notaProva2);
+        aluno.setMediaTrabalhos(mediaTrabalhos);
+
+        // Calculando média e verificando aprovação
+        double mediaFinal = aluno.calcularMediaFinal();
+        String situacao = aluno.estaAprovado() ? "Aprovado" : "Reprovado";
+
+        // Exibindo informações
+        System.out.println("\n### INFORMAÇÕES ###");
+        System.out.println("Nome: " + aluno.getNome());
+        System.out.println("Matrícula: " + aluno.getMatricula());
+        System.out.println("Nome do curso: " + aluno.getCurso());
+        System.out.printf("Situação: %s com média %.2f%n", situacao, mediaFinal);
+        System.out.println(">>> Fim da execução do software <<<");
+
+        scanner.close();
+    }
+}
