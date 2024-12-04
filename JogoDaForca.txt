@@ -1,0 +1,171 @@
+import java.util.*;
+
+public class JogoDaForca {
+
+    // Exibe o boneco da forca com base no número de erros
+    public static void desenharBoneco(int erros) {
+        switch (erros) {
+            case 0:
+                System.out.println("  +---+");
+                System.out.println("      |");
+                System.out.println("      |");
+                System.out.println("      |");
+                System.out.println("     ===");
+                break;
+            case 1:
+                System.out.println("  +---+");
+                System.out.println("  O   |");
+                System.out.println("      |");
+                System.out.println("      |");
+                System.out.println("     ===");
+                break;
+            case 2:
+                System.out.println("  +---+");
+                System.out.println("  O   |");
+                System.out.println("  |   |");
+                System.out.println("      |");
+                System.out.println("     ===");
+                break;
+            case 3:
+                System.out.println("  +---+");
+                System.out.println("  O   |");
+                System.out.println(" /|   |");
+                System.out.println("      |");
+                System.out.println("     ===");
+                break;
+            case 4:
+                System.out.println("  +---+");
+                System.out.println("  O   |");
+                System.out.println(" /|\\  |");
+                System.out.println("      |");
+                System.out.println("     ===");
+                break;
+            case 5:
+                System.out.println("  +---+");
+                System.out.println("  O   |");
+                System.out.println(" /|\\  |");
+                System.out.println(" /    |");
+                System.out.println("     ===");
+                break;
+            case 6:
+                System.out.println("  +---+");
+                System.out.println("  O   |");
+                System.out.println(" /|\\  |");
+                System.out.println(" / \\  |");
+                System.out.println("     ===");
+                break;
+            default:
+                System.out.println("Número de erros inválido.");
+        }
+    }
+
+    public static void main(String[] args) {
+        // Configuração inicial
+        Map<String, String[]> temasEPalavras = new HashMap<>();
+        temasEPalavras.put("Animais", new String[]{"elefante", "gato", "cavalo", "coelho", "tigre"});
+        temasEPalavras.put("Cores", new String[]{"vermelho", "azul", "amarelo", "verde", "roxo"});
+        temasEPalavras.put("Frutas", new String[]{"banana", "maca", "laranja", "uva", "melancia"});
+        temasEPalavras.put("Países", new String[]{"brasil", "canada", "alemanha", "japao", "australia"});
+        temasEPalavras.put("Tecnologia", new String[]{"computador", "internet", "celular", "software", "hardware"});
+
+        // Selecionar um tema e uma palavra aleatoriamente
+        Random random = new Random();
+        List<String> temas = new ArrayList<>(temasEPalavras.keySet());
+        String temaSelecionado = temas.get(random.nextInt(temas.size()));
+        String[] palavras = temasEPalavras.get(temaSelecionado);
+        if (palavras == null || palavras.length == 0) {
+            System.out.println("Nenhuma palavra disponível no tema escolhido. Encerrando o jogo.");
+            return;
+        }
+        String palavraSecreta = palavras[random.nextInt(palavras.length)];
+
+        int maxTentativas = 6; // Número máximo de tentativas
+        Set<Character> letrasUsadas = new HashSet<>();
+        char[] progresso = new char[palavraSecreta.length()];
+
+        // Inicializar progresso com "_"
+        Arrays.fill(progresso, '_');
+
+        int tentativasFeitas = 0;
+        boolean venceu = false;
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Bem-vindo ao Jogo da Forca!");
+        System.out.println("Tema: " + temaSelecionado);
+        System.out.println("A palavra tem " + palavraSecreta.length() + " letras.");
+
+        // Loop do jogo
+        while (tentativasFeitas < maxTentativas && !venceu) {
+            // Exibir o boneco atual e o progresso
+            desenharBoneco(tentativasFeitas);
+            System.out.println("\nProgresso: " + new String(progresso));
+            System.out.println("Letras usadas: " + letrasUsadas);
+            System.out.println("Tentativas restantes: " + (maxTentativas - tentativasFeitas));
+
+            // Solicitar uma entrada ao usuário
+            System.out.print("Digite uma letra ou a palavra inteira: ");
+            String entrada = scanner.nextLine().toLowerCase();
+
+            // Validação de entrada
+            if (entrada.isEmpty() || (!entrada.matches("[a-z]+"))) {
+                System.out.println("Entrada inválida! Digite uma letra ou uma palavra válida.");
+                continue;
+            }
+
+            // Verificar se o usuário tentou adivinhar a palavra completa
+            if (entrada.length() > 1) {
+                if (entrada.equals(palavraSecreta)) {
+                    venceu = true;
+                    break;
+                } else {
+                    System.out.println("Palavra errada!");
+                    tentativasFeitas++;
+                    continue;
+                }
+            }
+
+            // Caso o usuário digite uma letra
+            char tentativa = entrada.charAt(0);
+
+            // Verificar se a letra já foi usada
+            if (letrasUsadas.contains(tentativa)) {
+                System.out.println("Você já usou essa letra. Tente outra.");
+                continue;
+            }
+
+            letrasUsadas.add(tentativa);
+
+            // Verificar se a letra está na palavra secreta
+            boolean acertou = false;
+            for (int i = 0; i < palavraSecreta.length(); i++) {
+                if (palavraSecreta.charAt(i) == tentativa) {
+                    progresso[i] = tentativa;
+                    acertou = true;
+                }
+            }
+
+            if (acertou) {
+                System.out.println("Você acertou uma letra!");
+            } else {
+                System.out.println("Letra errada!");
+                tentativasFeitas++;
+            }
+
+            // Verificar se o jogador venceu
+            if (String.valueOf(progresso).equals(palavraSecreta)) {
+                venceu = true;
+            }
+        }
+
+        // Exibir o resultado final
+        if (venceu) {
+            System.out.println("\nParabéns! Você adivinhou a palavra: " + palavraSecreta);
+        } else {
+            desenharBoneco(maxTentativas);
+            System.out.println("\nVocê perdeu! A palavra era: " + palavraSecreta);
+        }
+
+        scanner.close();
+    }
+}
