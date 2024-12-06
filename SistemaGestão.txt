@@ -1,0 +1,176 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// Classe Produto
+class Produto {
+public:
+    int id;
+    string nome;
+    int quantidade;
+    double preco;
+
+    Produto(int id, string nome, int quantidade, double preco)
+        : id(id), nome(nome), quantidade(quantidade), preco(preco) {}
+};
+
+// Classe Funcionario
+class Funcionario {
+public:
+    int id;
+    string nome;
+    string cargo;
+
+    Funcionario(int id, string nome, string cargo)
+        : id(id), nome(nome), cargo(cargo) {}
+};
+
+// Funções auxiliares
+Produto* buscarProduto(vector<Produto>& produtos, int id) {
+    for (auto& produto : produtos) {
+        if (produto.id == id) {
+            return &produto;
+        }
+    }
+    return nullptr;
+}
+
+Funcionario* buscarFuncionario(vector<Funcionario>& funcionarios, int id) {
+    for (auto& funcionario : funcionarios) {
+        if (funcionario.id == id) {
+            return &funcionario;
+        }
+    }
+    return nullptr;
+}
+
+int main() {
+    vector<Produto> produtos;
+    vector<Funcionario> funcionarios;
+    int opcao;
+
+    do {
+        cout << "\nSistema de Gestão de Estoque\n";
+        cout << "1. Cadastrar Produto\n";
+        cout << "2. Cadastrar Funcionario\n";
+        cout << "3. Entrada de Estoque\n";
+        cout << "4. Saída de Estoque\n";
+        cout << "5. Listar Produtos\n";
+        cout << "6. Listar Funcionarios\n";
+        cout << "7. Sair\n";
+        cout << "Escolha uma opcao: ";
+        cin >> opcao;
+
+        switch (opcao) {
+        case 1: {
+            int id;
+            string nome;
+            int quantidade;
+            double preco;
+
+            cout << "\nCadastro de Produto\n";
+            cout << "ID: ";
+            cin >> id;
+            cout << "Nome: ";
+            cin.ignore();
+            getline(cin, nome);
+            cout << "Quantidade: ";
+            cin >> quantidade;
+            cout << "Preco: ";
+            cin >> preco;
+
+            produtos.emplace_back(id, nome, quantidade, preco);
+            cout << "Produto cadastrado com sucesso!\n";
+            break;
+        }
+        case 2: {
+            int id;
+            string nome, cargo;
+
+            cout << "\nCadastro de Funcionario\n";
+            cout << "ID: ";
+            cin >> id;
+            cout << "Nome: ";
+            cin.ignore();
+            getline(cin, nome);
+            cout << "Cargo: ";
+            getline(cin, cargo);
+
+            funcionarios.emplace_back(id, nome, cargo);
+            cout << "Funcionario cadastrado com sucesso!\n";
+            break;
+        }
+        case 3: {
+            int id, quantidade;
+
+            cout << "\nEntrada de Estoque\n";
+            cout << "ID do Produto: ";
+            cin >> id;
+            cout << "Quantidade: ";
+            cin >> quantidade;
+
+            Produto* produto = buscarProduto(produtos, id);
+            if (produto) {
+                produto->quantidade += quantidade;
+                cout << "Estoque atualizado com sucesso!\n";
+            } else {
+                cout << "Produto nao encontrado.\n";
+            }
+            break;
+        }
+        case 4: {
+            int id, quantidade;
+
+            cout << "\nSaida de Estoque\n";
+            cout << "ID do Produto: ";
+            cin >> id;
+            cout << "Quantidade: ";
+            cin >> quantidade;
+
+            Produto* produto = buscarProduto(produtos, id);
+            if (produto) {
+                if (produto->quantidade >= quantidade) {
+                    produto->quantidade -= quantidade;
+                    cout << "Estoque atualizado com sucesso!\n";
+                } else {
+                    cout << "Quantidade insuficiente em estoque.\n";
+                }
+            } else {
+                cout << "Produto nao encontrado.\n";
+            }
+            break;
+        }
+        case 5: {
+            cout << "\nLista de Produtos\n";
+            for (const auto& produto : produtos) {
+                cout << "ID: " << produto.id
+                     << ", Nome: " << produto.nome
+                     << ", Quantidade: " << produto.quantidade
+                     << ", Preco: " << produto.preco << "\n";
+            }
+            break;
+        }
+        case 6: {
+            cout << "\nLista de Funcionarios\n";
+            for (const auto& funcionario : funcionarios) {
+                cout << "ID: " << funcionario.id
+                     << ", Nome: " << funcionario.nome
+                     << ", Cargo: " << funcionario.cargo << "\n";
+            }
+            break;
+        }
+        case 7:
+            cout << "Saindo do sistema...\n";
+            break;
+        default:
+            cout << "Opcao invalida. Tente novamente.\n";
+            break;
+        }
+
+    } while (opcao != 7);
+
+    return 0;
+}
